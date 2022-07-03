@@ -15,7 +15,7 @@ Definable Macros for PowerToys Run
 
 [Download latest stable release](https://github.com/rcmaehl/PowerToysMacros/releases/latest/download/PowerToysMacros.exe)
 
-[Download latest testing release](https://nightly.link/rcmaehl/PowerToysMacros/workflows/ptm/main/ptm.zip)\
+[Download latest testing release](https://nightly.link/rcmaehl/PowerToysMacros/workflows/PTM/main/ptm.zip)\
 **Keep in mind that you will have to update testing releases manually**
 
 ### System Requirements
