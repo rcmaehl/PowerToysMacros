@@ -52,7 +52,7 @@ Func ProcessCMDLine()
 
 	If $iParams > 0 Then
 		Switch $CmdLine[1]
-			Case "uninstall"
+			Case "/uninstall"
 				RunRemoval()
 			Case Else
 				HandleMacro($CmdLine)
