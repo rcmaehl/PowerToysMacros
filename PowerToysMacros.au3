@@ -41,7 +41,10 @@ EndIf
 ProcessCMDLine()
 
 Func About()
-	MsgBox(0, "PowerToysMacro", $sVersion)
+	MsgBox($MB_OK + $MB_ICONINFORMATION + $MB_TOPMOST, _
+		"PowerToysMacros", _
+		$sVersion, _
+		10)
 EndFunc
 
 Func ProcessCMDLine()
@@ -49,14 +52,18 @@ Func ProcessCMDLine()
 
 	If $iParams > 0 Then
 		Switch $CmdLine[1]
-			Case "install"
-				RunSetup()
 			Case "uninstall"
 				RunRemoval()
 			Case Else
 				HandleMacro($CmdLine)
 				RunUpdateCheck()
 		EndSwitch
+	Else
+		RunSetup()
+		MsgBox($MB_OK + $MB_ICONINFORMATION + $MB_TOPMOST, _
+			"PowerToysMacros", _
+			_Translate($aMUI[1], "Install Completed Successfully."), _
+			10)
 	EndIf
 EndFunc
 
@@ -71,19 +78,29 @@ Func HandleMacro($aCmdLine)
 		$aInput = StringSplit($aCmdLine[1], " ", $STR_NOCOUNT)
 		IniReadSection(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0])
 		If @error Then
-			MsgBox(0, "No Macro", "Missing Macro Definition for: " & $aInput[0])
+			MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+				_Translate($aMUI[1], "No Macro"), _
+				_Translate($aMUI[1], "Missing Macro Definition for: " & $aInput[0]), _
+				10)
 			Return
 		Else
 			$sCommand = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Command", Null)
 			If $sCommand = Null Then
-				MsgBox(0, "No Command", "Missing Macro Command for: " & $aInput[0])
+				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+					_Translate($aMUI[1], "No Command"), _
+					_Translate($aMUI[1], "Missing Macro Command for: " & $aInput[0]), _
+					10)
 				Return
-			ElseIf $sCommand = "%param0%" Then
-				MsgBox(0, "No", "This is dangerous. Don't do this.")
+			ElseIf $sCommand = "{0}" Then
+				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+					_Translate($aMUI[1], "No."), _
+					_Translate($aMUI[1], "This is dangerous. Don't do this."), _
+					10)
 				Return
 			Else
-				$sCommand = StringReplace($sCommand, "%param0%", _ArrayToString($aInput, " ", 1))
-				MsgBox(0, "CMD", $sCommand)
+				$sCommand = StringReplace($sCommand, "{0}", _ArrayToString($aInput, " ", 1))
+				;MsgBox(0, "CMD", $sCommand)
+				ShellExecute($sCommand)
 			EndIf
 		EndIf
 	EndIf
@@ -146,7 +163,7 @@ Func RunUpdateCheck($bFull = False)
 	Switch _GetLatestRelease($sVersion)
 		Case -1
 			MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-				_Translate($aMUI[1], "Test Build?"), _
+				_Translate($aMUI[1], "PowerToysMacros Test Build?"), _
 				_Translate($aMUI[1], "You're running a newer build than publicly Available!"), _
 				10)
 		Case 0
