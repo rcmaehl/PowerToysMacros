@@ -9,6 +9,8 @@
 # PowerToysMacros
 Definable Macros for PowerToys Run
 
+![image](https://user-images.githubusercontent.com/716581/177028399-21dea245-1a62-412e-a550-83d01301c987.png)
+
 > :warning: PLEASE NOTE: PowerToysMacros is still BETA. Changes are to be expected, and performance to be improved.
 
 ## Download
