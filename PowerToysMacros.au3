@@ -99,7 +99,11 @@ Func HandleMacro($aCmdLine)
 				Return
 			Else
 				$sCommand = StringReplace($sCommand, "{0}", _ArrayToString($aInput, " ", 1))
-				;MsgBox(0, "CMD", $sCommand)
+				If Ubound($aInput) > 1 Then
+					For $iLoop = 1 To Ubound($aInput) - 1 Step 1
+						$sCommand = StringReplace($sCommand, "{" & $iLoop & "}", $aInput[$iLoop])
+					Next
+				EndIf
 				ShellExecute($sCommand)
 			EndIf
 		EndIf
