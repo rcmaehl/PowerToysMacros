@@ -1,0 +1,72 @@
+name: "🐛 Bug report"
+description: Report errors or unexpected behavior
+labels:
+- bug
+body:
+- type: markdown
+  attributes:
+    value: |
+      Please make sure to [search for existing issues](https://github.com/rcmaehl/PowerToysMacros/issues) before filing a new one!
+
+- type: checkboxes
+  attributes:
+    label: Preflight Checklist
+    options:
+      - label: I checked for existing issues
+        required: true
+
+- type: dropdown
+  attributes:
+    label: Install Type
+    description: How was PowerToysMacros Installed / Updated
+    multiple: false
+    options:
+      - New Install
+      - Manual Update
+      - New Deployment (Chocolatey, Winget, Etc)
+      - Managed Update (Chocolatey, Winget, Etc)
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: We highly suggest including screenshots and logs (COMING SOON).
+    placeholder: Tell us the steps required to trigger your bug.
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: ✔️ Expected Behavior
+    placeholder: What were you expecting?
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: ❌ Actual Behavior
+    placeholder: What happened instead?
+  validations:
+    required: false
+
+- type: input
+  attributes:
+    label: Microsoft Windows version
+    placeholder: |
+      "20H2 Build 19042"
+    description: |
+      Run Winver from Run (Win+R) or Start Menu
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Other Software
+    description: If you're reporting a bug about our interaction with other software, what software? What versions?
+    placeholder: |
+      vim 8.2 (inside WSL)
+      OpenSSH_for_Windows_8.1p1
+      My Cool Application v0.3 (include a code snippet if it would help!)
+  validations:
+    required: false
