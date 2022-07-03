@@ -60,6 +60,16 @@ body:
   validations:
     required: true
 
+- type: input
+  attributes:
+    label: Powertoys version
+    placeholder: |
+      "0.59.1"
+    description: |
+      Open PowerToys General Tab
+  validations:
+    required: true
+
 - type: textarea
   attributes:
     label: Other Software
