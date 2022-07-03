@@ -114,6 +114,8 @@ Func RunSetup()
 		Exit 29 ; ERROR_WRITE_FAULT
 	EndIf
 	SetAppRegistry()
+	FileInstall("./LICENSE", @LocalAppDataDir & "\PowerToysMacros\License.txt")
+	FileInstall("./EXAMPLES/Macros.ini", @LocalAppDataDir & "\PowerToysMacros\Macros.ini")
 
 EndFunc
 
