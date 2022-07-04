@@ -26,6 +26,7 @@ Opt("TrayAutoPause", 0)
 #include <Misc.au3>
 #include <Array.au3>
 #include <String.au3>
+#include <AutoItConstants.au3>
 #include <StringConstants.au3>
 
 #include "Includes\_Translation.au3"
@@ -69,7 +70,7 @@ EndFunc
 
 Func HandleMacro($aCmdLine)
 	Local $aInput
-	Local $sCommand
+	Local $sData
 
 	$aCmdLine[1] = StringReplace($aCmdLine[1], "macro:", "")
 	If $aCmdLine[1] = "" Then
@@ -84,28 +85,46 @@ Func HandleMacro($aCmdLine)
 				10)
 			Return
 		Else
-			$sCommand = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Command", Null)
-			If $sCommand = Null Then
+			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", Null)
+			If $sData = Null Then
 				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-					_Translate($aMUI[1], "No Command"), _
-					_Translate($aMUI[1], "Missing Macro Command for: " & $aInput[0]), _
+					_Translate($aMUI[1], "No Data"), _
+					_Translate($aMUI[1], "Missing Macro Data for: " & $aInput[0]), _
 					10)
 				Return
-			ElseIf $sCommand = "{0}" Then
+			ElseIf $sData = "{0}" Then
 				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 					_Translate($aMUI[1], "No."), _
 					_Translate($aMUI[1], "This is dangerous. Don't do this."), _
 					10)
 				Return
-			Else
-				$sCommand = StringReplace($sCommand, "{0}", _ArrayToString($aInput, " ", 1))
-				If Ubound($aInput) > 1 Then
-					For $iLoop = 1 To Ubound($aInput) - 1 Step 1
-						$sCommand = StringReplace($sCommand, "{" & $iLoop & "}", $aInput[$iLoop])
-					Next
-				EndIf
-				ShellExecute($sCommand)
 			EndIf
+			$sData = StringReplace($sData, "{0}", _ArrayToString($aInput, " ", 1))
+			If Ubound($aInput) > 1 Then
+				For $iLoop = 1 To Ubound($aInput) - 1 Step 1
+					$sData = StringReplace($sData, "{" & $iLoop & "}", $aInput[$iLoop])
+				Next
+			EndIf
+			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", Null)
+				Case "Command"
+					ShellExecute($sData)
+				Case "RawText"
+					Send($sData, $SEND_RAW)
+				Case "SpecialText"
+					Send($sData)
+				Case Null
+					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+						_Translate($aMUI[1], "No Type"), _
+						_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
+						10)
+					Return
+				Case Else
+					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+						_Translate($aMUI[1], "Invalid Type"), _
+						_Translate($aMUI[1], "Invalid Macro Type for: " & $aInput[0]), _
+						10)
+					Return
+			EndSwitch
 		EndIf
 	EndIf
 EndFunc
