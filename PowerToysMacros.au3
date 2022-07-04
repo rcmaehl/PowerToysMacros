@@ -72,6 +72,7 @@ Func HandleMacro($aCmdLine)
 
 	Local $sTemp
 	Local $sData
+	Local $sAlias
 	Local $aInput
 	Local $vSpread
 	Local $aMatches
@@ -93,6 +94,16 @@ Func HandleMacro($aCmdLine)
 
 			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", Null)
 			If $sData = Null Then
+			; Process Aliases
+			$sAlias = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Alias", "")
+			If $sAlias = "" Then
+				;;;
+			Else
+				$aCmdLine[1] = "macro:" & StringReplace($aCmdLine[1], $aInput[0], $sAlias, 1)
+				HandleMacro($aCmdLine)
+				Return
+			EndIf
+
 				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 					_Translate($aMUI[1], "No Data"), _
 					_Translate($aMUI[1], "Missing Macro Data for: " & $aInput[0]), _
