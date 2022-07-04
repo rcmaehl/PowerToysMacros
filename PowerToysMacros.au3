@@ -92,8 +92,6 @@ Func HandleMacro($aCmdLine)
 			Return
 		Else
 
-			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", Null)
-			If $sData = Null Then
 			; Process Aliases
 			$sAlias = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Alias", "")
 			If $sAlias = "" Then
@@ -104,6 +102,9 @@ Func HandleMacro($aCmdLine)
 				Return
 			EndIf
 
+			; Process Data Handling for a Macro, Prevent Directly Running Input
+			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", "")
+			If $sData = "" Then
 				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 					_Translate($aMUI[1], "No Data"), _
 					_Translate($aMUI[1], "Missing Macro Data for: " & $aInput[0]), _
@@ -151,14 +152,14 @@ Func HandleMacro($aCmdLine)
 			EndIf
 
 			; Handle Appropriate Macro Type
-			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", Null)
+			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", "")
 				Case "Command"
 					ShellExecute($sData)
 				Case "RawText"
 					Send($sData, $SEND_RAW)
 				Case "SpecialText"
 					Send($sData)
-				Case Null
+				Case ""
 					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 						_Translate($aMUI[1], "No Type"), _
 						_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
