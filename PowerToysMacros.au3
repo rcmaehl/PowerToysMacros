@@ -69,13 +69,18 @@ Func ProcessCMDLine()
 EndFunc
 
 Func HandleMacro($aCmdLine)
-	Local $aInput
+
+	Local $sTemp
 	Local $sData
+	Local $aInput
+	Local $vSpread
+	Local $aMatches
 
 	$aCmdLine[1] = StringReplace($aCmdLine[1], "macro:", "")
 	If $aCmdLine[1] = "" Then
 		About()
 	Else
+
 		$aInput = StringSplit($aCmdLine[1], " ", $STR_NOCOUNT)
 		IniReadSection(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0])
 		If @error Then
@@ -85,6 +90,7 @@ Func HandleMacro($aCmdLine)
 				10)
 			Return
 		Else
+
 			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", Null)
 			If $sData = Null Then
 				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
@@ -99,12 +105,41 @@ Func HandleMacro($aCmdLine)
 					10)
 				Return
 			EndIf
+
+			; Replace {#} with Appropriate Parameters
 			$sData = StringReplace($sData, "{0}", _ArrayToString($aInput, " ", 1))
 			If Ubound($aInput) > 1 Then
 				For $iLoop = 1 To Ubound($aInput) - 1 Step 1
 					$sData = StringReplace($sData, "{" & $iLoop & "}", $aInput[$iLoop])
 				Next
+
+				; Empty Invalid {#} Entries if they exist
+				$aMatches = StringRegExp($sData, "{\d+}", $STR_REGEXPARRAYGLOBALMATCH)
+				If Not @error Then
+					For $iLoop = 0 To UBound($aMatches) - 1 Step 1
+						$sData = StringReplace($sData, $aMatches[$iLoop], "")
+					Next
+				EndIf
+
+				; Check if {#...#} Exists, Replace with Appropriate Parameters
+				$aMatches = StringRegExp($sData, "{\d+...\d+}", $STR_REGEXPARRAYGLOBALMATCH)
+				If Not @error Then
+					For $iLoop = 0 To UBound($aMatches) - 1 Step 1
+						$vSpread = $aMatches[$iLoop]
+						$vSpread = StringReplace($vSpread, "{", "")
+						$vSpread = StringReplace($vSpread, "}", "")
+						$vSpread = StringSplit($vSpread, "...", $STR_ENTIRESPLIT+$STR_NOCOUNT)
+						$sTemp = ""
+						For $iLoop2 = $vSpread[0] To $vSpread[1] Step 1
+							If $iLoop2 >= UBound($aInput) Then ContinueLoop
+							$sTemp &= $aInput[$iLoop2]
+						Next
+						$sData = StringReplace($sData, $aMatches[$iLoop], $sTemp)
+					Next
+				EndIf
 			EndIf
+
+			; Handle Appropriate Macro Type
 			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", Null)
 				Case "Command"
 					ShellExecute($sData)
@@ -125,6 +160,7 @@ Func HandleMacro($aCmdLine)
 						10)
 					Return
 			EndSwitch
+
 		EndIf
 	EndIf
 EndFunc
