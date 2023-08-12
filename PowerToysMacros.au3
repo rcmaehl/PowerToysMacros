@@ -70,6 +70,7 @@ EndFunc
 
 Func HandleMacro($aCmdLine)
 
+	Local $sVerb
 	Local $sTemp
 	Local $sData
 	Local $sAlias
@@ -154,7 +155,20 @@ Func HandleMacro($aCmdLine)
 			; Handle Appropriate Macro Type
 			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", "")
 				Case "Command"
-					ShellExecute($sData)
+					$sVerb = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Verb", "None")
+					Switch $sVerb
+						Case "edit", "find", "open", "print", "properties", "runas"
+							;;;
+						Case "None"
+							$sVerb = Default
+						Case Else
+							MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+							_Translate($aMUI[1], "Invalid Verb"), _
+							_Translate($aMUI[1], "Missing Verb Type for: " & $aInput[0]), _
+							10)
+						Return
+					EndSwitch							
+					ShellExecute($sData, Default, Default, $sVerb)
 				Case "RawText"
 					Send($sData, $SEND_RAW)
 				Case "SpecialText"
