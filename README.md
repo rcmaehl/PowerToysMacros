@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/github/workflow/status/rcmaehl/PowerToysMacros/ptm)](https://github.com/rcmaehl/PowerToysMacros/actions?query=workflow%3Aptm)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/rcmaehl/PowerToysMacros/PTM.yml?branch=main)](https://github.com/rcmaehl/PowerToysMacros/actions?query=workflow%3Aptm)
 [![Download](https://img.shields.io/github/v/release/rcmaehl/PowerToysMacros)](https://github.com/rcmaehl/PowerToysMacros/releases/latest/)
 [![Download count](https://img.shields.io/github/downloads/rcmaehl/PowerToysMacros/total?label=Downloads)](https://github.com/rcmaehl/PowerToysMacros/releases/latest/)
 [![Chocolatey download count](https://img.shields.io/chocolatey/dt/PowerToysMacros?label=Chocolatey+downloads)](https://chocolatey.org/packages/PowerToysMacros)
