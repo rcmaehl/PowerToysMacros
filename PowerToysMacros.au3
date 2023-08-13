@@ -63,7 +63,7 @@ Func ProcessCMDLine()
 		RunSetup()
 		MsgBox($MB_OK + $MB_ICONINFORMATION + $MB_TOPMOST, _
 			"PowerToysMacros", _
-			_Translate($aMUI[1], "Install Completed Successfully."), _
+			_Translate($aMUI[1], "Install Completed Successfully. Uninstall using Programs and Features"), _
 			10)
 	EndIf
 EndFunc
