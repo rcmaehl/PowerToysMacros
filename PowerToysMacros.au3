@@ -166,7 +166,7 @@ Func HandleMacro($aCmdLine)
 								_Translate($aMUI[1], "Missing Verb Type for: " & $aInput[0]), _
 								10)
 							Return
-						EndSwitch							
+						EndSwitch
 						ShellExecute($sData, Default, Default, $sVerb)
 					Case "RawText"
 						Send($sData, $SEND_RAW)
