@@ -1,7 +1,6 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/rcmaehl/PowerToysMacros/PTM.yml?branch=main)](https://github.com/rcmaehl/PowerToysMacros/actions?query=workflow%3Aptm)
 [![Download](https://img.shields.io/github/v/release/rcmaehl/PowerToysMacros)](https://github.com/rcmaehl/PowerToysMacros/releases/latest/)
 [![Download count](https://img.shields.io/github/downloads/rcmaehl/PowerToysMacros/total?label=Downloads)](https://github.com/rcmaehl/PowerToysMacros/releases/latest/)
-[![Chocolatey download count](https://img.shields.io/chocolatey/dt/PowerToysMacros?label=Chocolatey+downloads)](https://chocolatey.org/packages/PowerToysMacros)
 [![Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-FF5E5B.svg?logo=ko-fi)](https://ko-fi.com/rcmaehl)
 [![PayPal](https://img.shields.io/badge/Donate%20on-PayPal-00457C.svg?logo=paypal)](https://paypal.me/rhsky)
 [![Join the Discord chat](https://img.shields.io/badge/Discord-chat-7289da.svg?&logo=discord)](https://discord.gg/uBnBcBx)
