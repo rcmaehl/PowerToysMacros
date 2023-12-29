@@ -5,9 +5,9 @@
 #AutoIt3Wrapper_UseX64=Y
 #AutoIt3Wrapper_Res_Comment=https://www.fcofix.org
 #AutoIt3Wrapper_Res_Description=Definable Powertoys Macros
-#AutoIt3Wrapper_Res_Fileversion=0.2.0.0
+#AutoIt3Wrapper_Res_Fileversion=0.3.0.0
 #AutoIt3Wrapper_Res_ProductName=PowerToysMacros
-#AutoIt3Wrapper_Res_ProductVersion=0.2.0.0
+#AutoIt3Wrapper_Res_ProductVersion=0.3.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Robert Maehl, using LGPL 3 License
 #AutoIt3Wrapper_Res_Language=1033
 #AutoIt3Wrapper_Res_requestedExecutionLevel=asInvoker
@@ -63,13 +63,14 @@ Func ProcessCMDLine()
 		RunSetup()
 		MsgBox($MB_OK + $MB_ICONINFORMATION + $MB_TOPMOST, _
 			"PowerToysMacros", _
-			_Translate($aMUI[1], "Install Completed Successfully."), _
+			_Translate($aMUI[1], "Install Completed Successfully. Uninstall using Programs and Features"), _
 			10)
 	EndIf
 EndFunc
 
 Func HandleMacro($aCmdLine)
 
+	Local $sVerb
 	Local $sTemp
 	Local $sData
 	Local $sAlias
@@ -81,7 +82,6 @@ Func HandleMacro($aCmdLine)
 	If $aCmdLine[1] = "" Then
 		About()
 	Else
-
 		$aInput = StringSplit($aCmdLine[1], " ", $STR_NOCOUNT)
 		IniReadSection(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0])
 		If @error Then
@@ -91,88 +91,102 @@ Func HandleMacro($aCmdLine)
 				10)
 			Return
 		Else
-
-			; Process Aliases
-			$sAlias = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Alias", "")
-			If $sAlias = "" Then
-				;;;
-			Else
-				$aCmdLine[1] = "macro:" & StringReplace($aCmdLine[1], $aInput[0], $sAlias, 1)
-				HandleMacro($aCmdLine)
-				Return
-			EndIf
-
-			; Process Data Handling for a Macro, Prevent Directly Running Input
-			$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", "")
-			If $sData = "" Then
-				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-					_Translate($aMUI[1], "No Data"), _
-					_Translate($aMUI[1], "Missing Macro Data for: " & $aInput[0]), _
-					10)
-				Return
-			ElseIf $sData = "{0}" Then
-				MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-					_Translate($aMUI[1], "No."), _
-					_Translate($aMUI[1], "This is dangerous. Don't do this."), _
-					10)
-				Return
-			EndIf
-
-			; Replace {#} with Appropriate Parameters
-			$sData = StringReplace($sData, "{0}", _ArrayToString($aInput, " ", 1))
-			If Ubound($aInput) > 1 Then
-				For $iLoop = 1 To Ubound($aInput) - 1 Step 1
-					$sData = StringReplace($sData, "{" & $iLoop & "}", $aInput[$iLoop])
-				Next
-
-				; Empty Invalid {#} Entries if they exist
-				$aMatches = StringRegExp($sData, "{\d+}", $STR_REGEXPARRAYGLOBALMATCH)
-				If Not @error Then
-					For $iLoop = 0 To UBound($aMatches) - 1 Step 1
-						$sData = StringReplace($sData, $aMatches[$iLoop], "")
-					Next
+			Do
+				; Process Aliases
+				$sAlias = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Alias", "")
+				If $sAlias = "" Then
+					;;;
+				Else
+					$aCmdLine[1] = "macro:" & StringReplace($aCmdLine[1], $aInput[0], $sAlias, 1)
+					HandleMacro($aCmdLine)
+					Return
 				EndIf
 
-				; Check if {#...#} Exists, Replace with Appropriate Parameters
-				$aMatches = StringRegExp($sData, "{\d+...\d+}", $STR_REGEXPARRAYGLOBALMATCH)
-				If Not @error Then
-					For $iLoop = 0 To UBound($aMatches) - 1 Step 1
-						$vSpread = $aMatches[$iLoop]
-						$vSpread = StringReplace($vSpread, "{", "")
-						$vSpread = StringReplace($vSpread, "}", "")
-						$vSpread = StringSplit($vSpread, "...", $STR_ENTIRESPLIT+$STR_NOCOUNT)
-						$sTemp = ""
-						For $iLoop2 = $vSpread[0] To $vSpread[1] Step 1
-							If $iLoop2 >= UBound($aInput) Then ContinueLoop
-							$sTemp &= $aInput[$iLoop2]
+				; Process Data Handling for a Macro, Prevent Directly Running Input
+				$sData = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Data", "")
+				If $sData = "" Then
+					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+						_Translate($aMUI[1], "No Data"), _
+						_Translate($aMUI[1], "Missing Macro Data for: " & $aInput[0]), _
+						10)
+					Return
+				ElseIf $sData = "{0}" Then
+					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+						_Translate($aMUI[1], "No."), _
+						_Translate($aMUI[1], "This is dangerous. Don't do this."), _
+						10)
+					Return
+				EndIf
+
+				; Replace {#} with Appropriate Parameters
+				$sData = StringReplace($sData, "{0}", _ArrayToString($aInput, " ", 1))
+				If Ubound($aInput) > 1 Then
+					For $iLoop = 1 To Ubound($aInput) - 1 Step 1
+						$sData = StringReplace($sData, "{" & $iLoop & "}", $aInput[$iLoop])
+					Next
+
+					; Empty Invalid {#} Entries if they exist
+					$aMatches = StringRegExp($sData, "{\d+}", $STR_REGEXPARRAYGLOBALMATCH)
+					If Not @error Then
+						For $iLoop = 0 To UBound($aMatches) - 1 Step 1
+							$sData = StringReplace($sData, $aMatches[$iLoop], "")
 						Next
-						$sData = StringReplace($sData, $aMatches[$iLoop], $sTemp)
-					Next
+					EndIf
+
+					; Check if {#...#} Exists, Replace with Appropriate Parameters
+					$aMatches = StringRegExp($sData, "{\d+...\d+}", $STR_REGEXPARRAYGLOBALMATCH)
+					If Not @error Then
+						For $iLoop = 0 To UBound($aMatches) - 1 Step 1
+							$vSpread = $aMatches[$iLoop]
+							$vSpread = StringReplace($vSpread, "{", "")
+							$vSpread = StringReplace($vSpread, "}", "")
+							$vSpread = StringSplit($vSpread, "...", $STR_ENTIRESPLIT+$STR_NOCOUNT)
+							$sTemp = ""
+							For $iLoop2 = $vSpread[0] To $vSpread[1] Step 1
+								If $iLoop2 >= UBound($aInput) Then ContinueLoop
+								$sTemp &= $aInput[$iLoop2]
+							Next
+							$sData = StringReplace($sData, $aMatches[$iLoop], $sTemp)
+						Next
+					EndIf
 				EndIf
-			EndIf
 
-			; Handle Appropriate Macro Type
-			Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", "")
-				Case "Command"
-					ShellExecute($sData)
-				Case "RawText"
-					Send($sData, $SEND_RAW)
-				Case "SpecialText"
-					Send($sData)
-				Case ""
-					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-						_Translate($aMUI[1], "No Type"), _
-						_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
-						10)
-					Return
-				Case Else
-					MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-						_Translate($aMUI[1], "Invalid Type"), _
-						_Translate($aMUI[1], "Invalid Macro Type for: " & $aInput[0]), _
-						10)
-					Return
-			EndSwitch
-
+				; Handle Appropriate Macro Type
+				Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", "")
+					Case "Command"
+						$sVerb = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Verb", "None")
+						Switch $sVerb
+							Case "edit", "find", "open", "print", "properties", "runas"
+								;;;
+							Case "None"
+								$sVerb = Default
+							Case Else
+								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+								_Translate($aMUI[1], "Invalid Verb"), _
+								_Translate($aMUI[1], "Missing Verb Type for: " & $aInput[0]), _
+								10)
+							Return
+						EndSwitch
+						ShellExecute($sData, Default, Default, $sVerb)
+					Case "RawText"
+						Send($sData, $SEND_RAW)
+					Case "SpecialText"
+						Send($sData)
+					Case ""
+						MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+							_Translate($aMUI[1], "No Type"), _
+								_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
+							10)
+						Return
+					Case Else
+						MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+							_Translate($aMUI[1], "Invalid Type"), _
+							_Translate($aMUI[1], "Invalid Macro Type for: " & $aInput[0]), _
+							10)
+						Return
+				EndSwitch
+				$aInput[0] = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "RunAfter", "None")
+			Until $aInput[0] = "None"
 		EndIf
 	EndIf
 EndFunc
