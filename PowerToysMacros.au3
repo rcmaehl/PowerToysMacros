@@ -5,9 +5,9 @@
 #AutoIt3Wrapper_UseX64=Y
 #AutoIt3Wrapper_Res_Comment=https://www.fcofix.org
 #AutoIt3Wrapper_Res_Description=Definable Powertoys Macros
-#AutoIt3Wrapper_Res_Fileversion=0.2.0.0
+#AutoIt3Wrapper_Res_Fileversion=0.3.0.0
 #AutoIt3Wrapper_Res_ProductName=PowerToysMacros
-#AutoIt3Wrapper_Res_ProductVersion=0.2.0.0
+#AutoIt3Wrapper_Res_ProductVersion=0.3.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Robert Maehl, using LGPL 3 License
 #AutoIt3Wrapper_Res_Language=1033
 #AutoIt3Wrapper_Res_requestedExecutionLevel=asInvoker
