@@ -72,11 +72,13 @@ Func HandleMacro($aCmdLine)
 
 	Local $sVerb
 	Local $sTemp
+	Local $sName
 	Local $sData
 	Local $sAlias
 	Local $aInput
 	Local $vSpread
 	Local $aMatches
+	Local $sInstance
 
 	$aCmdLine[1] = StringReplace($aCmdLine[1], "macro:", "")
 	If $aCmdLine[1] = "" Then
@@ -172,6 +174,8 @@ Func HandleMacro($aCmdLine)
 						Send($sData, $SEND_RAW)
 					Case "SpecialText"
 						Send($sData)
+					Case "WaitFor"
+						;;;
 					Case ""
 						MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 							_Translate($aMUI[1], "No Type"), _
