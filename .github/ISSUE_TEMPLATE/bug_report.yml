@@ -78,7 +78,6 @@ body:
   validations:
     required: true
 
-
 - type: textarea
   attributes:
     label: Other Software
