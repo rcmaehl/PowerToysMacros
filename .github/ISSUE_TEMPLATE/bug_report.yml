@@ -70,6 +70,15 @@ body:
   validations:
     required: true
 
+- type: input
+  attributes:
+    label: PowerToysMacros version
+    placeholder: |
+      "0.3.0.0"
+  validations:
+    required: true
+
+
 - type: textarea
   attributes:
     label: Other Software
