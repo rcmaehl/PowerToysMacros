@@ -34,7 +34,7 @@ Disk (Storage)|5MB Free|100MB Free
 1. Download and run "AutoIt Full Installation" from [official website](https://www.autoitscript.com/site/autoit/downloads). 
 1. Get the source code either by [downloading zip](https://github.com/rcmaehl/PowerToysMacros/archive/main.zip) or do `git clone https://github.com/rcmaehl/PowerToysMacros`.
 1. Right click on `PowerToysMacros.au3` in the PowerToysMacros directory and select "Compile Script (x64) (or x86 if you have 32 bit Windows install).
-1. This will create PowerToysMacros.exe in the same directory.s
+1. This will create PowerToysMacros.exe in the same directory.
 
 ## Contributing
 
