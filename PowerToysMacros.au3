@@ -192,7 +192,7 @@ Func HandleMacro($aCmdLine)
 					Case "SpecialText"
 						$sMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", 2)
 						Switch $sMode
-							Case -4 To 4
+							Case -4 To -1, 1 To 4
 								Opt("WinTitleMatchMode", $sMode)
 							Case Else
 								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
@@ -211,7 +211,8 @@ Func HandleMacro($aCmdLine)
 						$sKind = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Kind", "")
 						Switch $sKind
 							Case "Process"
-								If StringInStr($sData, " ") Or StringLeft($sData, 4) <> ".exe" Then
+								; TODO: Validate Process Name
+								If StringLeft($sData, 4) <> ".exe" Then
 									MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 										_Translate($aMUI[1], "Invalid WaitFor Data"), _
 										_Translate($aMUI[1], "Invalid WaitFor Data for: " & $aInput[0]), _
