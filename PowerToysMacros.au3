@@ -72,13 +72,13 @@ Func HandleMacro($aCmdLine)
 
 	Local $sVerb
 	Local $sTemp
-	Local $sName
 	Local $sData
 	Local $sAlias
 	Local $aInput
 	Local $vSpread
 	Local $aMatches
-	Local $sInstance
+	Local $sWaitType
+	Local $sMatchMode = Opt("WinTitleMatchMode")
 
 	$aCmdLine[1] = StringReplace($aCmdLine[1], "macro:", "")
 	If $aCmdLine[1] = "" Then
@@ -100,7 +100,7 @@ Func HandleMacro($aCmdLine)
 					;;;
 				Else
 					$aCmdLine[1] = "macro:" & StringReplace($aCmdLine[1], $aInput[0], $sAlias, 1)
-					HandleMacro($aCmdLine)
+					HandleMacro($aCmdLine) ; REWRITE?
 					Return
 				EndIf
 
@@ -156,18 +156,18 @@ Func HandleMacro($aCmdLine)
 				; Handle Appropriate Macro Type
 				Switch IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Type", "")
 					Case "Command"
-						$sVerb = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Verb", "None")
+						$sVerb = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Verb", "")
 						Switch $sVerb
 							Case "edit", "find", "open", "print", "properties", "runas"
 								;;;
-							Case "None"
+							Case ""
 								$sVerb = Default
 							Case Else
 								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 								_Translate($aMUI[1], "Invalid Verb"), _
-								_Translate($aMUI[1], "Missing Verb Type for: " & $aInput[0]), _
+								_Translate($aMUI[1], "Invalid Verb Type for: " & $aInput[0]), _
 								10)
-							Return
+								Return
 						EndSwitch
 						ShellExecute($sData, Default, Default, $sVerb)
 					Case "RawText"
@@ -175,11 +175,47 @@ Func HandleMacro($aCmdLine)
 					Case "SpecialText"
 						Send($sData)
 					Case "WaitFor"
-						;;;
+						$sWaitType = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Kind", "")
+						Switch $sWaitType
+							Case "Process"
+								If StringInStr($sData, " ") Or StringLeft($sData, 4) <> ".exe" Then
+									MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+										_Translate($aMUI[1], "Invalid WaitFor Data"), _
+										_Translate($aMUI[1], "Invalid WaitFor Data for: " & $aInput[0]), _
+										10)
+									Return
+								EndIf
+								ProcessWait($sData)
+							Case "Window"
+								$sMatchMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", "2")
+								Switch $sMatchMode
+									Case -4 To 4
+										Opt("WinTitleMatchMode", $sMatchMode)
+									Case Else
+										MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+											_Translate($aMUI[1], "Invalid WaitFor Mode"), _
+											_Translate($aMUI[1], "Invalid WaitFor Mode for: " & $aInput[0]), _
+											10)
+										Return
+								EndSwitch
+								WinWait($sData)
+							Case ""
+								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+									_Translate($aMUI[1], "No WaitFor Kind"), _
+									_Translate($aMUI[1], "Missing WaitFor Kind for: " & $aInput[0]), _
+									10)
+								Return
+							Case Else
+								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+									_Translate($aMUI[1], "Invalid WaitFor Kind"), _
+									_Translate($aMUI[1], "Invalid WaitFor Kind for: " & $aInput[0]), _
+									10)
+								Return
+						EndSwitch
 					Case ""
 						MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 							_Translate($aMUI[1], "No Type"), _
-								_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
+							_Translate($aMUI[1], "Missing Macro Type for: " & $aInput[0]), _
 							10)
 						Return
 					Case Else
@@ -190,6 +226,9 @@ Func HandleMacro($aCmdLine)
 						Return
 				EndSwitch
 				$aInput[0] = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "RunAfter", "None")
+				; Cleanup Input
+				$aInput[0] = StringReplace($aInput[0], "[", "")
+				$aInput[0] = StringReplace($aInput[0], "]", "")
 			Until $aInput[0] = "None"
 		EndIf
 	EndIf
