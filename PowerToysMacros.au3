@@ -172,6 +172,17 @@ Func HandleMacro($aCmdLine)
 						EndSwitch
 						ShellExecute($sData, Default, Default, $sVerb)
 					Case "RawText"
+						$sMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", 2)
+						Switch $sMode
+							Case -4 To 4
+								Opt("WinTitleMatchMode", $sMode)
+							Case Else
+								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+									_Translate($aMUI[1], "Invalid RawText Mode"), _
+									_Translate($aMUI[1], "Invalid RawText Mode for: " & $aInput[0]), _
+									10)
+								Return
+						EndSwitch
 						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
 						If $sReceiver <> "" Then
 							WinActivate($sReceiver)
@@ -179,6 +190,17 @@ Func HandleMacro($aCmdLine)
 						EndIf
 						Send($sData, $SEND_RAW)
 					Case "SpecialText"
+						$sMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", 2)
+						Switch $sMode
+							Case -4 To 4
+								Opt("WinTitleMatchMode", $sMode)
+							Case Else
+								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
+									_Translate($aMUI[1], "Invalid SpecialText Mode"), _
+									_Translate($aMUI[1], "Invalid SpecialText Mode for: " & $aInput[0]), _
+									10)
+								Return
+						EndSwitch
 						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
 						If $sReceiver <> "" Then
 							WinActivate($sReceiver)
