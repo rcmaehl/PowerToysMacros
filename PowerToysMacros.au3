@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Res_Fileversion=0.4.0.0
 #AutoIt3Wrapper_Res_ProductName=PowerToysMacros
 #AutoIt3Wrapper_Res_ProductVersion=0.4.0.0
-#AutoIt3Wrapper_Res_LegalCopyright=Robert Maehl, using LGPL 3 License
+#AutoIt3Wrapper_Res_LegalCopyright=Robyn Maehl, using LGPL 3 License
 #AutoIt3Wrapper_Res_Language=1033
 #AutoIt3Wrapper_Res_requestedExecutionLevel=asInvoker
 #AutoIt3Wrapper_Res_Compatibility=Win10
