@@ -5,9 +5,9 @@
 #AutoIt3Wrapper_UseX64=Y
 #AutoIt3Wrapper_Res_Comment=https://www.fcofix.org
 #AutoIt3Wrapper_Res_Description=Definable Powertoys Macros
-#AutoIt3Wrapper_Res_Fileversion=0.3.0.0
+#AutoIt3Wrapper_Res_Fileversion=0.4.0.0
 #AutoIt3Wrapper_Res_ProductName=PowerToysMacros
-#AutoIt3Wrapper_Res_ProductVersion=0.3.0.0
+#AutoIt3Wrapper_Res_ProductVersion=0.4.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Robert Maehl, using LGPL 3 License
 #AutoIt3Wrapper_Res_Language=1033
 #AutoIt3Wrapper_Res_requestedExecutionLevel=asInvoker
@@ -70,15 +70,16 @@ EndFunc
 
 Func HandleMacro($aCmdLine)
 
-	Local $sVerb
-	Local $sTemp
 	Local $sData
+	Local $sKind
+	Local $sMode
+	Local $sTemp
+	Local $sVerb
 	Local $sAlias
 	Local $aInput
 	Local $vSpread
 	Local $aMatches
-	Local $sWaitType
-	Local $sMatchMode = Opt("WinTitleMatchMode")
+	Local $sReceiver
 
 	$aCmdLine[1] = StringReplace($aCmdLine[1], "macro:", "")
 	If $aCmdLine[1] = "" Then
@@ -164,19 +165,29 @@ Func HandleMacro($aCmdLine)
 								$sVerb = Default
 							Case Else
 								MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
-								_Translate($aMUI[1], "Invalid Verb"), _
-								_Translate($aMUI[1], "Invalid Verb Type for: " & $aInput[0]), _
+									_Translate($aMUI[1], "Invalid Verb"), _
+									_Translate($aMUI[1], "Invalid Verb Type for: " & $aInput[0]), _
 								10)
 								Return
 						EndSwitch
 						ShellExecute($sData, Default, Default, $sVerb)
 					Case "RawText"
+						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
+						If $sReceiver <> "" Then
+							WinActivate($sReceiver)
+							WinWaitActive($sReceiver, 10)
+						EndIf
 						Send($sData, $SEND_RAW)
 					Case "SpecialText"
+						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
+						If $sReceiver <> "" Then
+							WinActivate($sReceiver)
+							WinWaitActive($sReceiver, 10)
+						EndIf
 						Send($sData)
 					Case "WaitFor"
-						$sWaitType = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Kind", "")
-						Switch $sWaitType
+						$sKind = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Kind", "")
+						Switch $sKind
 							Case "Process"
 								If StringInStr($sData, " ") Or StringLeft($sData, 4) <> ".exe" Then
 									MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
@@ -187,10 +198,10 @@ Func HandleMacro($aCmdLine)
 								EndIf
 								ProcessWait($sData)
 							Case "Window"
-								$sMatchMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", "2")
-								Switch $sMatchMode
+								$sMode = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Mode", 2)
+								Switch $sMode
 									Case -4 To 4
-										Opt("WinTitleMatchMode", $sMatchMode)
+										Opt("WinTitleMatchMode", $sMode)
 									Case Else
 										MsgBox($MB_OK + $MB_ICONWARNING + $MB_TOPMOST, _
 											_Translate($aMUI[1], "Invalid WaitFor Mode"), _
