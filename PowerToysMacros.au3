@@ -186,7 +186,7 @@ Func HandleMacro($aCmdLine)
 						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
 						If $sReceiver <> "" Then
 							WinActivate($sReceiver)
-							WinWaitActive($sReceiver, 10)
+							Sleep(100)
 						EndIf
 						Send($sData, $SEND_RAW)
 					Case "SpecialText"
@@ -204,7 +204,7 @@ Func HandleMacro($aCmdLine)
 						$sReceiver = IniRead(@LocalAppDataDir & "\PowerToysMacros\Macros.ini", $aInput[0], "Receiver", "")
 						If $sReceiver <> "" Then
 							WinActivate($sReceiver)
-							WinWaitActive($sReceiver, 10)
+							Sleep(100)
 						EndIf
 						Send($sData)
 					Case "WaitFor"
